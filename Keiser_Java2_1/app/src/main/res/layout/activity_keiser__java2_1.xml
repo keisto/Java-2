@@ -4,11 +4,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".Keiser_Java2_1"
-    android:gravity="fill_horizontal">
+    android:gravity="fill_horizontal"
+    android:id="@+id/frag_container">
 
-    <!--<fragment android:id="@+id/fragment_body"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content">-->
 
     <EditText
         android:layout_width="wrap_content"
@@ -17,9 +15,9 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/submit"
         android:layout_alignBottom="@+id/submit"
+        android:hint="Enter Movie Title"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:hint="Enter Movie Title" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -31,101 +29,39 @@
         android:layout_alignParentEnd="true"
         android:onClick="onSubmit" />
 
-    <ListView
+    <FrameLayout
+        android:id="@+id/master_fragment"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/movieList"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_height="match_parent"
         android:layout_below="@+id/input"
-        android:clickable="false"
-        android:smoothScrollbar="false"
-        android:focusable="false" />
-
-    <TextView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Movie Title"
-        android:id="@+id/title"
-        android:layout_toRightOf="@+id/movieList"
-        android:layout_below="@+id/input"
-        android:paddingLeft="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Rated : ##"
-        android:id="@+id/rated"
-        android:layout_alignBottom="@+id/title"
-        android:layout_below="@+id/input"
-        android:layout_toRightOf="@+id/title"
-        android:gravity="right"
-        android:layout_alignRight="@+id/submit"
-        android:layout_alignEnd="@+id/submit"
-        android:paddingRight="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Released: Year Mon Day"
-        android:id="@+id/released"
-        android:layout_below="@+id/title"
-        android:layout_toRightOf="@+id/movieList"
-        android:layout_toEndOf="@+id/movieList"
-        android:paddingLeft="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Rating: ## out of 10"
-        android:id="@+id/rating"
-        android:layout_below="@+id/title"
-        android:layout_alignRight="@+id/rated"
-        android:layout_alignEnd="@+id/rated"
-        android:gravity="right"
-        android:paddingRight="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Genre: "
-        android:id="@+id/genre"
-        android:layout_below="@+id/released"
-        android:layout_toRightOf="@+id/movieList"
-        android:layout_toEndOf="@+id/movieList"
-        android:paddingLeft="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Plot:"
-        android:id="@+id/plot"
-        android:layout_below="@+id/genre"
-        android:layout_toRightOf="@+id/movieList"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_vertical|center_horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
+        android:background="#21caff"
+        android:layout_marginLeft="2dp" >
+
+    </FrameLayout>
+    <fragment
+        android:id="@+id/detail_fragment"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/input"
+        android:layout_toLeftOf="@+id/master_fragment"
+        android:name="xyz.y_not.keiser_java2_1.DetailFragment"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <!--</fragment>-->
+
+
     <!--<fragment-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:name="android.app.ListFragment"-->
-        <!--android:id="@+id/fragment"-->
+        <!--android:id="@+id/detailFragment"-->
         <!--android:layout_alignParentLeft="true"-->
         <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_toLeftOf="@+id/title"-->
-        <!--android:layout_toStartOf="@+id/title"-->
-        <!--android:layout_below="@+id/input" />-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:name="xyz.y_not.keiser_java2_1.DetailFragment"-->
+        <!--tools:layout="@layout/detail_fragment"/>-->
 
 </RelativeLayout>

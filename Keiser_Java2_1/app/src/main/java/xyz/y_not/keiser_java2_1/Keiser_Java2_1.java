@@ -2,6 +2,8 @@ package xyz.y_not.keiser_java2_1;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -9,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,27 +50,14 @@ import static android.widget.Toast.LENGTH_LONG;
 
 public class Keiser_Java2_1 extends Activity {
 
-    public static final String TAG = "Keiser_Java2_1.TAG";
-
-
     ConnectivityManager mgr;
     // Variables
-    TextView title;
-    TextView plot;
-    TextView rated;
-    TextView released;
-    TextView genre;
-    TextView rating;
-    ListView movieList;
     EditText input;
     Button submit;
     ArrayList<JSONObject> movieJson = new ArrayList<JSONObject>();
-    ArrayList<String> movieTitles = new ArrayList<String>();
-    ArrayAdapter arrayAdapter;
     int jData = 100;
-    int tData = 100;
     String jsonData = "";
-    String titleData = "";
+    String setColor = "#000000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,37 +67,12 @@ public class Keiser_Java2_1 extends Activity {
 
         mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         // Set Variables
-        title = (TextView) findViewById(R.id.title);
-        plot = (TextView) findViewById(R.id.plot);
-        rated = (TextView) findViewById(R.id.rated);
-        rating = (TextView) findViewById(R.id.rating);
-        genre = (TextView) findViewById(R.id.genre);
-        released = (TextView) findViewById(R.id.released);
         input = (EditText) findViewById(R.id.input);
         submit = (Button) findViewById(R.id.submit);
-        movieList = (ListView) findViewById(R.id.movieList);
-        freshStart();
 
-//        if (savedInstanceState == null){
-//            Fragment1 frag = Fragment1.newInstance();
-//
-//            getFragmentManager().beginTransaction().replace(R.id.fragment, frag,
-//                    Fragment1.TAG).commit();
-//            frag.setJson(movieJson);
-//
-//        }
-    }
-    // Clear Fields Check for File(s)
-    public void freshStart(){
-        title.setText("");
-        plot.setText("");
-        rated.setText("");
-        rating.setText("");
-        genre.setText("");
-        released.setText("");
-        //Read File
         readJson();
     }
+
     public void comingSoon() throws JSONException {
         //Add Local Movies
         JSONObject movie1 = new JSONObject();
@@ -175,19 +141,12 @@ public class Keiser_Java2_1 extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        movieTitles.add(movie1.getString("Title"));
-//        movieTitles.add(movie2.getString("Title"));
-//        movieTitles.add(movie3.getString("Title"));
-//        movieTitles.add(movie4.getString("Title"));
-//        movieTitles.add(movie5.getString("Title"));
-//        movieTitles.add(movie6.getString("Title"));
         movieJson.add(movie1);
         movieJson.add(movie2);
         movieJson.add(movie3);
         movieJson.add(movie4);
         movieJson.add(movie5);
         movieJson.add(movie6);
-
         updateList();
     }
 
@@ -233,43 +192,11 @@ public class Keiser_Java2_1 extends Activity {
     }
 
     private void updateList() {
-        movieTitles.clear();
-        for (int i = 0; i < movieJson.size(); i++) {
-            try {
-                movieTitles.add(movieJson.get(i).getString("Title"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, movieTitles);
-        movieList.setAdapter(arrayAdapter);
-        movieList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(final AdapterView<?> parent, View view, final int position,
-                                    long id) {
-                {
-                    try {
-                        title.setText(movieJson.get(position).getString("Title"));
-                        plot.setText(movieJson.get(position).getString("Plot"));
-                        rated.setText("Rated: " +
-                                movieJson.get(position).getString("Rated"));
-                        released.setText("Released: " +
-                                movieJson.get(position).getString("Released"));
-                        genre.setText("Genre: " +
-                                movieJson.get(position).getString("Genre"));
-                        if (movieJson.get(position).getString("imdbRating") == "Not Rated") {
-                            rating.setText("Not Available");
-                        } else {
-                            rating.setText("Rating: " +
-                                    movieJson.get(position).getString("imdbRating") +
-                                    " out of 10");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+        MasterFragment frag = MasterFragment.newInstance();
+        frag.setMoviesList(movieJson);
+        frag.setTextColor(setColor);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.master_fragment, frag, "Detail Frag : ").commit();
         // Save Data
         writeMovies();
     }
@@ -329,7 +256,10 @@ public class Keiser_Java2_1 extends Activity {
             e.printStackTrace();
         }
     }
-
+    public void clearData(){
+        movieJson.clear();
+        updateList();
+    }
     private void readJson() {
         File external = getExternalFilesDir(null);
         File file = new File(external, "movies.txt");
@@ -362,5 +292,63 @@ public class Keiser_Java2_1 extends Activity {
         updateList();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_keiser__java2_1, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+
+            Intent intent = new Intent();
+            intent.setClass(this, PreferencesActivity.class);
+            startActivityForResult(intent, 2015);
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 2015){
+            SharedPreferences myPref =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            boolean red = myPref.getBoolean("Red", false);
+            boolean white = myPref.getBoolean("White", false);
+            boolean blue = myPref.getBoolean("Blue", false);
+            boolean clear = myPref.getBoolean("Clear", false);
+            boolean load = myPref.getBoolean("Default", false);
+
+            if(red==true){
+                setColor = "#990000";
+                updateList();
+            }
+            if(white==true){
+                setColor = "#FFFFFF";
+                updateList();
+            }
+            if(blue==true){
+                setColor = "#000099";
+                updateList();
+            }
+            if(clear==true){
+                clearData();
+            }
+            if(load==true){
+                try {
+                    comingSoon();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
 
